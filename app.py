@@ -2,14 +2,22 @@ import streamlit as st
 import numpy as np
 from numpy.linalg import matrix_rank, pinv
 
-st.title("Math Agent App")
+st.set_page_config(page_title="Math Agent App", layout="wide")
 
-st.write("This app explains Rank and Pseudoinverse.")
+st.title("🚀 Math Agent App")
+st.subheader("Rank + Pseudoinverse + Projection Explorer")
 
-rows = st.number_input("Number of rows", min_value=1, value=3)
-cols = st.number_input("Number of columns", min_value=1, value=3)
+st.markdown("---")
 
-st.write("Enter matrix values row by row (comma separated):")
+col1, col2 = st.columns(2)
+
+with col1:
+    rows = st.number_input("Number of Rows", min_value=1, value=3)
+
+with col2:
+    cols = st.number_input("Number of Columns", min_value=1, value=3)
+
+st.write("### Enter Matrix Values (comma separated)")
 
 matrix_input = []
 
@@ -21,26 +29,30 @@ for i in range(rows):
 if len(matrix_input) == rows:
 
     A = np.array(matrix_input)
-    st.write("Matrix A:")
-    st.write(A)
 
-    r = matrix_rank(A)
-    st.write("Rank =", r)
+    st.markdown("## 📊 Matrix")
+    st.dataframe(A)
+
+    rank = matrix_rank(A)
+    st.success(f"✅ Rank = {rank}")
 
     A_pinv = pinv(A)
-    st.write("Pseudoinverse:")
-    st.write(A_pinv)
+
+    st.markdown("## 🔄 Pseudoinverse")
+    st.dataframe(A_pinv)
 
     P = A @ A_pinv
-    st.write("Projection Matrix:")
-    st.write(P)
+
+    st.markdown("## 🎯 Projection Matrix")
+    st.dataframe(P)
 
     eigenvalues = np.linalg.eigvals(P)
-    st.write("Eigenvalues:")
+
+    st.markdown("## 📈 Eigenvalues")
     st.write(eigenvalues)
 
-    st.write("Zero eigenvalues:",
+    st.write("Zero Eigenvalues:",
              np.sum(np.isclose(eigenvalues, 0)))
 
-    st.write("One eigenvalues:",
+    st.write("One Eigenvalues:",
              np.sum(np.isclose(eigenvalues, 1)))
